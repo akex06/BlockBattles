@@ -40,13 +40,13 @@ public class OnHangingPlace implements Listener {
         if (art == Art.COURBET) {
             HashMap<Player, Integer> playerLuck = Data.getInstance().playerLuck;
             playerLuck.put(player, playerLuck.getOrDefault(player, 0) - 99);
-            Data.sendMessages("&cYou got -99 luck", "&f" + player.getName() + " &agot -99 luck", player, battleName);
+            Data.sendMessages("&cYou got -99 luck", "&f" + player.getName() + " &agot -99 luck", player);
 
             // 99 Luck
         } else if (art == Art.CREEBET || art == Art.SEA || art == Art.WASTELAND || art == Art.POOL) {
-            HashMap<Player, Integer> extraTurns = Data.getInstance().extraTurns;
-            extraTurns.put(player, extraTurns.getOrDefault(player, 0) + 1);
-            Data.sendMessages("&aYou got +99 luck", "&f" + player.getName() + " &cgot +99 luck", player, battleName);
+            HashMap<Player, Integer> playerLuck = Data.getInstance().playerLuck;
+            playerLuck.put(player, playerLuck.getOrDefault(player, 0) + 99);
+            Data.sendMessages("&aYou got +99 luck", "&f" + player.getName() + " &cgot +99 luck", player);
 
             // Extra turn
         } else if (art == Art.SUNSET) {
@@ -56,29 +56,29 @@ public class OnHangingPlace implements Listener {
                     extraTurns.put(player, extraTurns.getOrDefault(entry.getKey(), 0) + 1);
                 }
             }
-            Data.sendMessages("&aYou got +1 extra turn", "&f" + player.getName() + " &cgot +1 extra turn", player, battleName);
+            Data.sendMessages("&aYou got +1 extra turn", "&f" + player.getName() + " &cgot +1 extra turn", player);
 
             // Extra 2 turns
         } else if (art == Art.BUST) {
             HashMap<Player, Integer> extraTurns = Data.getInstance().extraTurns;
             extraTurns.put(player, extraTurns.get(player) + 2);
-            Data.sendMessages("&aYou got +2 extra turns", "&f" + player.getName() + " &cgot +2 extra turns", player, battleName);
+            Data.sendMessages("&aYou got +2 extra turns", "&f" + player.getName() + " &cgot +2 extra turns", player);
 
             // Die
         } else if (art == Art.WITHER || art == Art.AZTEC) {
-            Data.sendMessages("&cSorry for that, have more luck next time", "&f" + player.getName() + " &adied", player, battleName);
+            Data.sendMessages("&cSorry for that, have more luck next time", "&f" + player.getName() + " &adied", player);
             player.setHealth(0);
 
             // Crash client
         } else if (art == Art.VOID) {
-            Data.sendMessages("&cOh, that's unexpected, see you in the other world <3", "&f{player2} crashed lol", player, battleName);
+            Data.sendMessages("&cOh, that's unexpected, see you in the other world <3", "&f{player2} crashed lol", player);
             player.spawnParticle(Particle.EXPLOSION_HUGE, player.getLocation(), 2147483647);
 
             // Strength boost
         } else if (art == Art.FIGHTERS) {
             System.out.println("Strength boost");
             player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 1000000, 1));
-            Data.sendMessages("&aYou got strength", "&f" + player.getName() + " &cgot a strength boost", player, battleName);
+            Data.sendMessages("&aYou got strength", "&f" + player.getName() + " &cgot a strength boost", player);
 
             // Nether warp
         } else if (art == Art.SKELETON) {
@@ -89,30 +89,30 @@ public class OnHangingPlace implements Listener {
             System.out.println("20 luck");
             HashMap<Player, Integer> playerLuck = Data.getInstance().playerLuck;
             playerLuck.put(player, playerLuck.getOrDefault(player, 0) + 20);
-            Data.sendMessages("&aYou got &f+20 &aluck", "&f" + player.getName() + " &cgot &f+20 &fluck", player, battleName);
+            Data.sendMessages("&aYou got &f+20 &aluck", "&f" + player.getName() + " &cgot &f+20 &fluck", player);
 
             // Speed boost
         } else if (art == Art.BOMB) {
             System.out.println("Speed boost");
             player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 1000000, 1));
-            Data.sendMessages("&aYou got a speed boost", "&f" + player.getName() + " &cgot a speed boost", player, battleName);
+            Data.sendMessages("&aYou got a speed boost", "&f" + player.getName() + " &cgot a speed boost", player);
 
             // Slowness debuff
         } else if (art == Art.ALBAN) {
             System.out.println("Slowness debuff");
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 1000000, 1));
-            Data.sendMessages("&cYou got a slowness debuff", "&f" + player.getName() + " &agot a slowness debuff", player, battleName);
+            Data.sendMessages("&cYou got a slowness debuff", "&f" + player.getName() + " &agot a slowness debuff", player);
 
             // All debuffs
         } else if (art == Art.KEBAB) {
             System.out.println("All debuffs");
-            Data.sendMessages("&cYou got all debuffs", "&f" + player.getName() + " &agot all debuffs", player, battleName);
+            Data.sendMessages("&cYou got all debuffs", "&f" + player.getName() + " &agot all debuffs", player);
 
             // -50 Luck
         } else if (art == Art.DONKEY_KONG) {
             HashMap<Player, Integer> playerLuck = Data.getInstance().playerLuck;
             playerLuck.put(player, playerLuck.getOrDefault(player, 0) - 50);
-            Data.sendMessages("&cYou got -50 luck", "&f" + player.getName() + " &agot -50 luck", player, battleName);
+            Data.sendMessages("&cYou got -50 luck", "&f" + player.getName() + " &agot -50 luck", player);
 
             // Debuff on wednesdays
         } else if (art == Art.PLANT) {
@@ -121,17 +121,16 @@ public class OnHangingPlace implements Listener {
                 Data.sendMessages(
                         "&cYou got all debuffs, wish it wasn't wednesday",
                         "&f" + player.getName() + " &agot all debuffs",
-                        player,
-                        battleName
+                        player
                 );
             } else {
                 player.sendMessage("&aYou were lucky it wasn't a wednesday");
             }
 
         } else {
-            Data.sendMessages("&fYou got nothing", "&f" + player.getName() + " &fgot nothing", player, battleName);
+            Data.sendMessages("&fYou got nothing", "&f" + player.getName() + " &fgot nothing", player);
         }
 
-        Data.changeTurns(player, battleName);
+        Data.changeTurns(player);
     }
 }

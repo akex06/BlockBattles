@@ -55,6 +55,9 @@ public class OnInventoryClick implements Listener {
 
                     if (playerAmount == 2) {
                         BattleManager.startBattle(battleName, player);
+                        Data.sendMessages("&aThe match is starting", "&aThe match is starting", player);
+                    } else {
+                        player.sendMessage(Color.getPrefix("&aOne more player is needed to play the game"));
                     }
                 }
             }

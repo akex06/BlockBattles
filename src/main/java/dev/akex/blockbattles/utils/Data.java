@@ -65,14 +65,18 @@ public class Data {
                 }
             }
 
+            Location spawn = getLocation("spawn.");
             playersInBattle.remove(player2);
+            player.teleport(spawn);
             player2.sendMessage(Color.getPrefix("&fYou've won the game"));
-            player2.teleport(getLocation("spawn."));
+            player2.teleport(spawn);
         }
     }
 
-    public static void sendMessages(String message1, String message2, Player player, String battleName) {
-        for (Map.Entry<Player, String> entry : Data.getInstance().playersInBattle.entrySet()) {
+    public static void sendMessages(String message1, String message2, Player player) {
+        HashMap<Player, String> playersInBattle = Data.getInstance().playersInBattle;
+        String battleName = playersInBattle.get(player);
+        for (Map.Entry<Player, String> entry : playersInBattle.entrySet()) {
             if (entry.getKey() != player && entry.getValue().equals(battleName)) {
                 Player player2 = entry.getKey();
 
@@ -82,13 +86,14 @@ public class Data {
         }
     }
 
-    public static void changeTurns(Player player, String battleName) {
+    public static void changeTurns(Player player) {
         HashMap<Player, String> playersInBattle = Data.getInstance().playersInBattle;
         HashMap<String, Player> battleTurns = Data.getInstance().battleTurns;
         HashMap<Player, Integer> extraTurns = Data.getInstance().extraTurns;
+
         Player player2 = null;
         for (Map.Entry<Player, String> entry : playersInBattle.entrySet()) {
-            if (entry.getKey() != player && entry.getValue().equals(battleName)) {
+            if (entry.getKey() != player && entry.getValue().equals(playersInBattle.get(player))) {
                 player2 = entry.getKey();
                 break;
             }
@@ -98,13 +103,15 @@ public class Data {
             return;
         }
 
+        String battleName = playersInBattle.get(player);
         int playerTurns = extraTurns.getOrDefault(player, 0);
+
         if (playerTurns >= 1) {
             extraTurns.put(player, playerTurns-1);
-            sendMessages("&aYou have an extra turn", "&f" + player.getName() + " has an extra turn", player, battleName);
+            sendMessages("&aYou have an extra turn", "&f" + player.getName() + " has an extra turn", player);
         } else {
             battleTurns.put(battleName, player2);
-            sendMessages("&cIt's &f" + player2.getName() + " &cturn", "&aIt's your turn", player, battleName);
+            sendMessages("&cIt's &f" + player2.getName() + " &cturn", "&aIt's your turn", player);
         }
     }
 }
