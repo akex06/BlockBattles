@@ -1,0 +1,129 @@
+prefix: "&7[ &fBlock&6Battles &7]&f: "
+
+inventory_title: "&7Battle List"
+battles:
+  0:
+    p1_spawn:
+      x: 35.5
+      y: -60
+      z: 9.5
+    p2_spawn:
+      x: 41.5
+      y: -60
+      z: -14.5
+    players: 0
+
+normal_items:
+  BLACK_BED:
+    - GLASS
+
+  GLASS:
+    - ENCHANTMENT_TABLE
+
+  ENCHANTMENT_TABLE:
+    - ARMOR_STAND
+    - PINK_BED
+
+  ARMOR_STAND:
+    - BAD_OMEN_BANNER
+
+  BELL:
+    - POLISHED_BLACKSTONE_PRESSURE_PLATE
+    - TWISTING_VINES
+
+  POLISHED_BLACKSTONE_PRESSURE_PLATE:
+    - CRIMSON_DOOR
+
+  CRIMSON_DOOR:
+    - PURPLE_BLOCK
+
+  PURPLE_BLOCK:
+    - MAGENTA_WOOL
+
+  MAGENTA_WOOL:
+    - GOLD_BLOCK
+
+  TARGET_BLOCK:
+    - TRIDENT
+
+  GREEN_WOOL:
+    - GOLD_BLOCK
+
+  GOLD_BLOCK:
+    - PURPLE_WOOL
+
+  CAMPFIRE:
+    - BARREL
+
+  PURPLE_WOOL:
+    - BLACK_CARPET
+    - BLUE_CARPET
+
+  EMERALD_BLOCK:
+    - BELL
+
+  BLACK_CARPET:
+    - WEATHER_CUT_COPPER_STAIRS
+
+  DIRT_BLOCK:
+    - OAK_SAPLING
+    - BELL
+
+  TWISTING_VINES:
+    - END_STONE_BRICKS
+
+  SNOW_BUCKET:
+    - SUNFLOWER
+
+  BEE_NEST:
+    - HONEY_BLOCK
+
+  HONEY_BLOCK:
+    - AMETHYST_BLOCK
+
+  AMETHYST_BLOCK:
+    - CRIMSON_DOOR_WALL
+
+  BRAIN_CORAL:
+    - HORN_CORAL
+    - IRON_TRAPDOOR
+
+  IRON_TRAPDOOR:
+    - LEVER
+
+  OAK_TRAPDOORS:
+    - STONE_CUTTER
+
+  STONE_CUTTER:
+    - ORANGE_WOOL
+
+  ORANGE_WOOL:
+    - GREEN_CARPET
+    - PURPLE_CARPET
+
+  WHITE_BANNER:
+    - ORANGE_CANDLES
+
+  SEA_LANTER:
+    - BRAIN_CORAL
+
+  MAGMA_BLOCK:
+    - BLAST_FURNACE
+
+  LEVER:
+    - LIGHTNING_ROD
+    - STICKY_PISTON
+    - PISTON
+
+  MOSS_BLOCK:
+    - EMERALD_BLOCK
+
+  TUBE_CORAL:
+    - BRAIN_CORAL
+    - HORN_CORAL
+
+  FIRE_CORAL:
+    - PINK_CARPET
+
+  PINK_CARPET:
+    - FLOWER_POT

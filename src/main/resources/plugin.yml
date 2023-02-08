@@ -1,0 +1,14 @@
+name: BlockBattles
+version: '${version}'
+main: dev.akex.blockbattles.BlockBattles
+api-version: 1.19
+authors: [ Akex06 ]
+
+commands:
+  battles:
+  setspawn:
+    permission: blockbattles.setspawn
+  spawn:
+  leave:
+  setbattlespawn:
+    permission: blockbattles.setbattlespawn
