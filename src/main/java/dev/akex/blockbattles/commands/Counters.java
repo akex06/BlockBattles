@@ -48,8 +48,7 @@ public class Counters implements CommandExecutor {
 
         Inventory inventory = Bukkit.createInventory(null, 54, Color.translate("&fList of counters"));
         FileConfiguration config = BlockBattles.getInstance().getCounters();
-        Set<String> section = config.getConfigurationSection("normal_items").getKeys(false);
-        List<String> items = new ArrayList<>(section);
+        List<String> items = new ArrayList<>(config.getConfigurationSection("normal_items").getKeys(false));
 
         Player player = ((Player) sender).getPlayer();
 
@@ -58,24 +57,24 @@ public class Counters implements CommandExecutor {
             inventory.setItem(i, backgroundItem);
         }
 
-        int itemAmount = items.size()-page*28 < 28 ? items.size()-page*28 : 27;
 
-        for (int i = 0; i < itemAmount+2; i++) {
-            int itemIndex = Math.max(page+i-1, 0);
-            ArrayList<String> lore = new ArrayList<>();
-            lore.add(Color.translate("&fThis item gets countered by: "));
-            for (Object counter : Objects.requireNonNull(config.getList("normal_items." + items.get(itemIndex)))){
-                String counterItem = (String) counter;
-                lore.add(Color.translate("&e" + WordUtils.capitalizeFully(counterItem).replace("_", " ")));
-            }
-            inventory.setItem(
-                    Data.slots[itemIndex],
-                    Data.createItem(
-                            Material.getMaterial(items.get(itemIndex)),
-                            Color.translate("&b" + WordUtils.capitalizeFully(String.valueOf(items.get(itemIndex))).replace("_", " ")),
-                            lore
-                    )
-            );
+        int startIndex = (((int) Math.ceil((double) 1 / 2))-1) * 28;
+        int endIndex;
+        if ((page + 1) * 28 > items.size()) {
+            System.out.println("asdS");
+            endIndex = items.size();
+        } else {
+            endIndex = (page + 1) * 28;
+        }
+
+        int i = 0;
+        System.out.println(startIndex);
+        System.out.println(endIndex);
+        System.out.println(items.subList(startIndex, endIndex));
+        for (String materialName : items.subList(startIndex, endIndex)) {
+            inventory.setItem(Data.slots[i], new ItemStack(Material.getMaterial(materialName)));
+
+            i++;
         }
 
         ItemStack previousPage = Data.createItem(Material.PLAYER_HEAD, "&eClick to go to the previous page", null);
@@ -83,11 +82,12 @@ public class Counters implements CommandExecutor {
 
         ItemStack nextPage = Data.createItem(Material.PLAYER_HEAD, "&eClick to go to the next page", null);
         Data.setSkullTexture(nextPage, "https://textures.minecraft.net/texture/19bf3292e126a105b54eba713aa1b152d541a1d8938829c56364d178ed22bf");
+
         ItemStack currentPage = Data.createItem(Material.BLACK_STAINED_GLASS_PANE, "&eCurrent page: &f" + page, null);
 
         inventory.setItem(48, previousPage);
-        inventory.setItem(50, nextPage);
         inventory.setItem(49, currentPage);
+        inventory.setItem(50, nextPage);
 
         player.openInventory(inventory);
         return true;

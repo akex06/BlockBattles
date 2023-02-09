@@ -1,13 +1,12 @@
 package dev.akex.blockbattles.listeners;
 
 import dev.akex.blockbattles.BlockBattles;
-import dev.akex.blockbattles.utils.BattleManager;
+import dev.akex.blockbattles.utils.Battle;
 import dev.akex.blockbattles.utils.Color;
 import dev.akex.blockbattles.utils.Data;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -33,38 +32,41 @@ public class OnInventoryClick implements Listener {
             Player player = ((Player) event.getWhoClicked()).getPlayer();
             ItemStack item = event.getCurrentItem();
 
-            HashMap<String, Integer> battles = Data.getInstance().battlePlayerAmount;
-            HashMap<Player, String> players = Data.getInstance().playersInBattle;
+
+            HashMap<Player, String> playersWaiting = Data.getInstance().playersWaiting;
 
             if (item.getType() == Material.GREEN_TERRACOTTA) {
-                String rawName = item.getItemMeta().getDisplayName();
-                String[] splittedName = ChatColor.stripColor(rawName).split(" ");
-                String battleName = splittedName[splittedName.length - 1];
+                String battleName = Battle.getBattleID(item.getItemMeta().getDisplayName());
 
-                int playerAmount = battles.get(battleName);
+                int playerAmount = Battle.getPlayerWaitingAmount(battleName);
+                playerAmount += 1;
+
+                playersWaiting.put(player, battleName);
+                ItemMeta itemMeta = item.getItemMeta();
+
+                List<String> lore = itemMeta.getLore();
+                lore.set(0, Color.translate("&aThere are " + playerAmount + "/2 players"));
+
+                itemMeta.setLore(lore);
+                item.setItemMeta(itemMeta);
+
+                String pathLocation = playerAmount == 1 ? "battles." + battleName + "." + "p1_spawn." : "battles." + battleName + "." + "p2_spawn.";
+                Location location = Data.getLocation(pathLocation);
+
+                player.teleport(location);
+
                 if (playerAmount == 2) {
-                    player.sendMessage(Color.getPrefix("&cThis match has already started"));
+                    Player player2 = Battle.getOtherPlayer(player);
+                    Battle battle = new Battle(battleName, player, player2);
+                    battle.start();
+                    HashMap<Player, Battle> battles = BlockBattles.getInstance().battles;
+                    battles.put(player, battle);
+                    battles.put(player2, battle);
+                    playersWaiting.remove(player2);
+
                 } else {
-                    playerAmount += 1;
-                    battles.put(battleName, playerAmount);
-                    players.put(player, battleName);
-                    ItemMeta itemMeta = item.getItemMeta();
-                    List<String> lore = itemMeta.getLore();
-                    lore.set(0, Color.translate("&aThere are " + playerAmount + "/2 players"));
-                    itemMeta.setLore(lore);
-                    item.setItemMeta(itemMeta);
-
-                    String pathLocation = playerAmount == 1 ? "battles." + battleName + "." + "p1_spawn." : "battles." + battleName + "." + "p2_spawn.";
-                    Location location = Data.getLocation(pathLocation);
-
-                    player.teleport(location);
-
-                    if (playerAmount == 2) {
-                        BattleManager.startBattle(battleName, player);
-                        Data.sendMessages("&aThe match is starting", "&aThe match is starting", player);
-                    } else {
-                        player.sendMessage(Color.getPrefix("&aOne more player is needed to play the game"));
-                    }
+                    player.sendMessage(Color.getPrefix("&aOne more player is needed to play the game"));
+                    playersWaiting.put(player, battleName);
                 }
             }
         } else if (view.getTitle().equals(Color.translate("&fList of counters"))) {

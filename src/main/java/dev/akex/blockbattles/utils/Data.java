@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Bat;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -63,69 +64,33 @@ public class Data {
         );
     }
 
-    public static void removePlayers(Player player) {
-        HashMap<Player, String> playersInBattle = Data.getInstance().playersInBattle;
 
-        String battleName = playersInBattle.get(player);
-        if (battleName != null) {
-            Data.getInstance().battleTurns.remove(battleName);
-            Data.getInstance().battlePlayerAmount.put(battleName, 0);
-            Data.getInstance().battleTurns.remove(battleName);
-            Player player2 = null;
-            playersInBattle.remove(player);
-            for (Map.Entry<Player, String> entry : playersInBattle.entrySet()) {
-                if (entry.getValue().equals(battleName) && entry.getKey() != player) {
-                    player2 = entry.getKey();
-                    break;
-                }
-            }
-
-            Location spawn = getLocation("spawn.");
-            playersInBattle.remove(player2);
-            player.teleport(spawn);
-            player2.sendMessage(Color.getPrefix("&fYou've won the game"));
-            player2.teleport(spawn);
-        }
-    }
 
     public static void sendMessages(String message1, String message2, Player player) {
-        HashMap<Player, String> playersInBattle = Data.getInstance().playersInBattle;
-        String battleName = playersInBattle.get(player);
-        for (Map.Entry<Player, String> entry : playersInBattle.entrySet()) {
-            if (entry.getKey() != player && entry.getValue().equals(battleName)) {
-                Player player2 = entry.getKey();
 
-                player.sendMessage(Color.getPrefix(message1));
-                player2.sendMessage(Color.getPrefix(message2.replace("{player2}", player2.getName())));
-            }
+        Battle battle = BlockBattles.getInstance().battles.get(player);
+        if (battle != null) {
+            Player player2 = battle.player2;
+
+            player.sendMessage(Color.getPrefix(message1));
+            player2.sendMessage(Color.getPrefix(message2.replace("{player2}", player2.getName())));
         }
     }
 
     public static void changeTurns(Player player) {
-        HashMap<Player, String> playersInBattle = Data.getInstance().playersInBattle;
-        HashMap<String, Player> battleTurns = Data.getInstance().battleTurns;
-        HashMap<Player, Integer> extraTurns = Data.getInstance().extraTurns;
+        Battle battle = Data.getInstance().battles.get(player);
 
-        Player player2 = null;
-        for (Map.Entry<Player, String> entry : playersInBattle.entrySet()) {
-            if (entry.getKey() != player && entry.getValue().equals(playersInBattle.get(player))) {
-                player2 = entry.getKey();
-                break;
-            }
-        }
-
-        if (player2 == null) {
+        if (battle == null) {
             return;
         }
 
-        String battleName = playersInBattle.get(player);
-        int playerTurns = extraTurns.getOrDefault(player, 0);
+        Player player2 = battle.player2;
 
-        if (playerTurns >= 1) {
-            extraTurns.put(player, playerTurns-1);
+        if (battle.extraTurns >= 1) {
+            battle.extraTurns -= 1;
             sendMessages("&aYou have an extra turn", "&f" + player.getName() + " has an extra turn", player);
         } else {
-            battleTurns.put(battleName, player2);
+            battle.turn = battle.turn == player ? player2 : player;
             sendMessages("&cIt's &f" + player2.getName() + " &cturn", "&aIt's your turn", player);
         }
     }

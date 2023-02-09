@@ -8,7 +8,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 public class OnBlockBreak implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-        if (BlockBattles.getInstance().playersInBattle.get(event.getPlayer()) != null) {
+        if (BlockBattles.getInstance().battles.get(event.getPlayer()) != null) {
             event.setCancelled(true);
         }
     }

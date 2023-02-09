@@ -33,7 +33,7 @@ public class Battles implements CommandExecutor {
         }
         FileConfiguration config = BlockBattles.getInstance().getConfig();
         Inventory inventory = Bukkit.createInventory(null, 54, Color.translate(config.getString("inventory_title")));
-        HashMap<Player, String> players = BlockBattles.getInstance().playersInBattle;
+        HashMap<Player, String> players = BlockBattles.getInstance().playersWaiting;
         Player player = ((Player) sender).getPlayer();
 
         if (players.get(player) != null) {

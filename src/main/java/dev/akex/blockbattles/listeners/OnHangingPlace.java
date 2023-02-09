@@ -1,9 +1,12 @@
 package dev.akex.blockbattles.listeners;
 
+import dev.akex.blockbattles.BlockBattles;
+import dev.akex.blockbattles.utils.Battle;
 import dev.akex.blockbattles.utils.Color;
 import dev.akex.blockbattles.utils.Data;
 import org.bukkit.Art;
 import org.bukkit.Particle;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Painting;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,15 +22,16 @@ import java.util.Map;
 public class OnHangingPlace implements Listener {
     @EventHandler
     public void onHangingPlace(HangingPlaceEvent event) {
-        HashMap<Player, String> playersInBattle = Data.getInstance().playersInBattle;
-        HashMap<String, Player> battleTurns = Data.getInstance().battleTurns;
+        HashMap<Player, Battle> battles = Data.getInstance().battles;
         Player player = event.getPlayer();
-        String battleName = Data.getInstance().playersInBattle.get(player);
 
-        if (playersInBattle.get(player) == null || player == null) {
+        if (battles.get(player) == null || player == null) {
             return;
         }
-        if (battleTurns.get(battleName) != player) {
+
+        String battleName = Data.getInstance().battles.get(player).battleID;
+        Battle battle = battles.get(player);
+        if (battle.turn != player) {
             event.setCancelled(true);
             player.sendMessage(Color.getPrefix("&cIt is not your turn, please wait"));
             return;
@@ -50,18 +54,12 @@ public class OnHangingPlace implements Listener {
 
             // Extra turn
         } else if (art == Art.SUNSET) {
-            for (Map.Entry<Player, String> entry : playersInBattle.entrySet()) {
-                if (entry.getKey() != player && entry.getValue().equals(battleName)) {
-                    HashMap<Player, Integer> extraTurns = Data.getInstance().extraTurns;
-                    extraTurns.put(player, extraTurns.getOrDefault(entry.getKey(), 0) + 1);
-                }
-            }
+            battle.extraTurns += 1;
             Data.sendMessages("&aYou got +1 extra turn", "&f" + player.getName() + " &cgot +1 extra turn", player);
 
             // Extra 2 turns
         } else if (art == Art.BUST) {
-            HashMap<Player, Integer> extraTurns = Data.getInstance().extraTurns;
-            extraTurns.put(player, extraTurns.get(player) + 2);
+            BlockBattles.getInstance().battles.get(player).extraTurns += 2;
             Data.sendMessages("&aYou got +2 extra turns", "&f" + player.getName() + " &cgot +2 extra turns", player);
 
             // Die

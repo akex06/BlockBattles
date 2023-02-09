@@ -2,25 +2,15 @@ package dev.akex.blockbattles;
 
 import dev.akex.blockbattles.commands.*;
 import dev.akex.blockbattles.listeners.*;
+import dev.akex.blockbattles.utils.Battle;
 import dev.akex.blockbattles.utils.Color;
 import dev.akex.blockbattles.utils.Config;
-import org.apache.commons.lang3.text.WordUtils;
 import org.bukkit.Material;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.StringUtil;
-import org.yaml.snakeyaml.Yaml;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 
 public final class BlockBattles extends JavaPlugin {
     public static BlockBattles instance;
@@ -28,12 +18,10 @@ public final class BlockBattles extends JavaPlugin {
         return instance;
     }
     private FileConfiguration counters;
+    public HashMap<Player, Battle> battles = new HashMap<>();
 
-    public HashMap<Player, String> playersInBattle = new HashMap<>();
+    public HashMap<Player, String> playersWaiting = new HashMap<>();
     public HashMap<String, Integer> battlePlayerAmount = new HashMap<>();
-    public HashMap<String, Player> battleTurns = new HashMap<>();
-    public HashMap<Player, Integer> extraTurns = new HashMap<>();
-    public HashMap<Player, Material> lastPlaced = new HashMap<>();
     public HashMap<Player, Integer> playerLuck = new HashMap<>();
 
     @Override
@@ -62,8 +50,6 @@ public final class BlockBattles extends JavaPlugin {
     public FileConfiguration getCounters() {
         return this.counters;
     }
-
-
 
     public void loadEvents() {
         getServer().getPluginManager().registerEvents(new OnInventoryClick(), this);

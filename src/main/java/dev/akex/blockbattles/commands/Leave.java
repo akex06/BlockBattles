@@ -1,5 +1,6 @@
 package dev.akex.blockbattles.commands;
 
+import dev.akex.blockbattles.utils.Battle;
 import dev.akex.blockbattles.utils.Color;
 import dev.akex.blockbattles.utils.Data;
 import org.bukkit.Location;
@@ -19,24 +20,20 @@ public class Leave implements CommandExecutor {
         }
 
         Player player = ((Player) sender).getPlayer();
-        HashMap<Player, String> players = Data.getInstance().playersInBattle;
-        HashMap<String, Integer> battles = Data.getInstance().battlePlayerAmount;
+        HashMap<Player, Battle> battles = Data.getInstance().battles;
+        HashMap<Player, String> playersWaiting = Data.getInstance().playersWaiting;
+        Battle battle = battles.get(player);
+        Location spawnLocation = Data.getLocation("spawn.");
 
-        if (players.get(player) != null) {
-            String battleName = players.get(player);
-            Location location = Data.getLocation("spawn.");
-
-            if (battles.get(battleName) == 2) {
-                Data.removePlayers(player);
-                player.teleport(location);
+        if (battle == null) {
+            if (playersWaiting.get(player) != null) {
+                playersWaiting.remove(player);
+                player.teleport(spawnLocation);
             } else {
-                battles.put(players.get(player), battles.get(players.get(player)) - 1);
-                players.remove(player);
-
-                player.teleport(location);
+                player.sendMessage(Color.getPrefix("&cYou can only use this command in a match"));
             }
         } else {
-            player.sendMessage(Color.getPrefix("&cYou can only use this command in a match"));
+            Battle.removePlayers(player);
         }
 
         return true;
