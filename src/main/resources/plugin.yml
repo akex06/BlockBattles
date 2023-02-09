@@ -12,3 +12,4 @@ commands:
   leave:
   setbattlespawn:
     permission: blockbattles.setbattlespawn
+  counters:

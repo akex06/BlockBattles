@@ -24,14 +24,7 @@ import java.util.Optional;
 
 
 public class Battles implements CommandExecutor {
-    private Integer[] slots = {
-            10, 11, 12, 13, 14,
-            15, 16, 19, 20, 21,
-            22, 23, 24, 25, 26,
-            27, 28, 29, 30, 32,
-            32, 33, 34, 37, 38,
-            39, 40, 41, 42, 43
-    };
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
@@ -73,7 +66,7 @@ public class Battles implements CommandExecutor {
 
             ItemStack item = Data.createItem(material, Color.translate("&7Room: &f" + battleName), lore);
 
-            inventory.setItem(slots[i], item);
+            inventory.setItem(Data.slots[i], item);
             i++;
         }
 

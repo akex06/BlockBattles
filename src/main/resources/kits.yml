@@ -1,0 +1,18 @@
+kits:
+  "0":
+    -  STONECUTTER
+    -  GREEN_CARPET
+    -  END_ROD
+    -  LANTERN
+    -  COBWEB
+    -  IRON_TRAPDOOR
+    -  ARMOR_STAND
+
+  "1":
+    - OAK_TRAPDOOR
+    - ORANGE_WOOL
+    - PUMPKIN
+    - END_ROD
+    - BLUE_CANDLE
+    - BRAIN_CORAL
+    - ENDER_PEARL
