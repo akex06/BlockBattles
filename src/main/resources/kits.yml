@@ -1,18 +1,67 @@
+default_kit: "0"
 kits:
   "0":
-    -  STONECUTTER
-    -  GREEN_CARPET
-    -  END_ROD
-    -  LANTERN
-    -  COBWEB
-    -  IRON_TRAPDOOR
-    -  ARMOR_STAND
+    item: DIRT
+    price: 0
+    content:
+      -  STONECUTTER
+      -  GREEN_CARPET
+      -  END_ROD
+      -  LANTERN
+      -  COBWEB
+      -  IRON_TRAPDOOR
+      -  ARMOR_STAND
 
   "1":
-    - OAK_TRAPDOOR
-    - ORANGE_WOOL
-    - PUMPKIN
-    - END_ROD
-    - BLUE_CANDLE
-    - BRAIN_CORAL
-    - ENDER_PEARL
+    item: GRASS_BLOCK
+    price: 0
+    content:
+      - OAK_TRAPDOOR
+      - ORANGE_WOOL
+      - PUMPKIN
+      - END_ROD
+      - BLUE_CANDLE
+      - BRAIN_CORAL
+      - ENDER_PEARL
+
+  "3":
+    item: STICKY_PISTON
+    price: 0
+    content:
+      - DIRT
+      - STICKY_PISTON
+      - PINK_BANNER
+      - POWERED_RAIL
+      - MINECART
+
+  "4":
+    item: BLUE_CANDLE
+    price: 0
+    content:
+      - OAK_SAPLING
+      - BLUE_CANDLE
+      - WARPED_DOOR
+      - LIGHTNING_ROD
+      - PURPLE_CONCRETE
+
+  "5":
+    item: LIME_BED
+    price: 0
+    content:
+      - LIME_BED
+      - GLASS
+      - ARMOR_STAND
+      - BELL
+      - CRIMSON_DOOR
+      - PURPLE_WOOL
+
+  "6":
+    item: BLACK_BED
+    price: 0
+    content:
+      - BLACK_BED
+      - ENCHANTING_TABLE
+      - PLAYER_HEAD
+      - GRAY_BANNER
+      - BUBBLE_CORAL_BLOCK
+      - PUMPKIN

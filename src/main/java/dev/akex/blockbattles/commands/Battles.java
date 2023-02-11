@@ -1,13 +1,12 @@
 package dev.akex.blockbattles.commands;
 
 import dev.akex.blockbattles.BlockBattles;
+import dev.akex.blockbattles.utils.Battle;
 import dev.akex.blockbattles.utils.Color;
 import dev.akex.blockbattles.utils.Data;
+import dev.akex.blockbattles.utils.Inventories;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -19,8 +18,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 
 public class Battles implements CommandExecutor {
@@ -33,15 +31,14 @@ public class Battles implements CommandExecutor {
         }
         FileConfiguration config = BlockBattles.getInstance().getConfig();
         Inventory inventory = Bukkit.createInventory(null, 54, Color.translate(config.getString("inventory_title")));
-        HashMap<Player, String> players = BlockBattles.getInstance().playersWaiting;
         Player player = ((Player) sender).getPlayer();
 
-        if (players.get(player) != null) {
+        if (BlockBattles.getInstance().playersWaiting.get(player) != null || BlockBattles.getInstance().battles.get(player) != null) {
             player.sendMessage(Color.getPrefix("&cYou are already in a match, use &f/leave &c to leave the match"));
             return true;
         }
 
-        ItemStack backgroundItem = Data.createItem(Material.BLACK_STAINED_GLASS_PANE, " ", null);
+        ItemStack backgroundItem = Inventories.createItem(Material.BLACK_STAINED_GLASS_PANE, " ", null);
         for (int i = 0; i < 54; i++) {
             inventory.setItem(i, backgroundItem);
         }
@@ -52,21 +49,28 @@ public class Battles implements CommandExecutor {
         for (String battleName : configBattles.getKeys(false)) {
             Material material;
             ArrayList<String> lore = new ArrayList<>();
-            int playerAmount = Data.getInstance().battlePlayerAmount.get(battleName);
+            int playerAmount = Battle.getPlayerWaitingAmount(battleName);
+            boolean matchInProgress = false;
+            for (Map.Entry<Player, Battle> entry : BlockBattles.getInstance().battles.entrySet()) {
+                if (entry.getValue().battleID.equals(battleName)) {
+                    matchInProgress = true;
+                    break;
+                }
+            }
 
-            lore.add(Color.translate("&aThere are " + playerAmount + "/2 players"));
-
-            if (playerAmount == 2) {
+            if (matchInProgress) {
                 material = Material.RED_TERRACOTTA;
+                lore.add(Color.translate("&aThere are 2/2 players"));
                 lore.add(Color.translate("&cMatch in progress"));
             } else {
                 material = Material.GREEN_TERRACOTTA;
+                lore.add(Color.translate("&aThere are " + playerAmount + "/2 players"));
                 lore.add(Color.translate("&eClick to join!"));
             }
 
-            ItemStack item = Data.createItem(material, Color.translate("&7Room: &f" + battleName), lore);
+            ItemStack item = Inventories.createItem(material, Color.translate("&7Room: &f" + battleName), lore);
 
-            inventory.setItem(Data.slots[i], item);
+            inventory.setItem(Inventories.slots[i], item);
             i++;
         }
 

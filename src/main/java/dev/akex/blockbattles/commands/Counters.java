@@ -4,6 +4,7 @@ import dev.akex.blockbattles.BlockBattles;
 import dev.akex.blockbattles.utils.Color;
 import dev.akex.blockbattles.utils.Config;
 import dev.akex.blockbattles.utils.Data;
+import dev.akex.blockbattles.utils.Inventories;
 import org.apache.commons.lang3.text.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -18,6 +19,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.profile.PlayerProfile;
 import org.bukkit.profile.PlayerTextures;
@@ -35,6 +37,10 @@ public class Counters implements CommandExecutor {
             return true;
         }
 
+        FileConfiguration config = BlockBattles.getInstance().getCounters();
+        List<String> items = new ArrayList<>(config.getConfigurationSection("normal_items").getKeys(false));
+        int pages = (int) Math.ceil((double) items.size() / 28);
+
         int page;
         if (args.length == 0 || Integer.parseInt(args[0]) < 0) {
             page = 0;
@@ -46,44 +52,49 @@ public class Counters implements CommandExecutor {
             }
         }
 
-        Inventory inventory = Bukkit.createInventory(null, 54, Color.translate("&fList of counters"));
-        FileConfiguration config = BlockBattles.getInstance().getCounters();
-        List<String> items = new ArrayList<>(config.getConfigurationSection("normal_items").getKeys(false));
+        if (page == pages) {
+            return true;
+        }
 
+        Inventory inventory = Bukkit.createInventory(null, 54, Color.translate("&fList of counters"));
         Player player = ((Player) sender).getPlayer();
 
-        ItemStack backgroundItem = Data.createItem(Material.BLACK_STAINED_GLASS_PANE, " ", null);
+        ItemStack backgroundItem = Inventories.createItem(Material.BLACK_STAINED_GLASS_PANE, " ", null);
         for (int i = 0; i < 54; i++) {
             inventory.setItem(i, backgroundItem);
         }
 
-
-        int startIndex = (((int) Math.ceil((double) 1 / 2))-1) * 28;
-        int endIndex;
-        if ((page + 1) * 28 > items.size()) {
-            System.out.println("asdS");
+        int startIndex = page * 28;
+        int endIndex = (page + 1) * 28;
+        if (endIndex > items.size()) {
             endIndex = items.size();
-        } else {
-            endIndex = (page + 1) * 28;
         }
 
         int i = 0;
-        System.out.println(startIndex);
-        System.out.println(endIndex);
-        System.out.println(items.subList(startIndex, endIndex));
         for (String materialName : items.subList(startIndex, endIndex)) {
-            inventory.setItem(Data.slots[i], new ItemStack(Material.getMaterial(materialName)));
+            ItemStack item = new ItemStack(Material.getMaterial(materialName));
+            ItemMeta meta = item.getItemMeta();
+            ArrayList<String> lore = new ArrayList<>();
+            lore.add(Color.translate("&fCountered by:"));
+            for (Object object : Objects.requireNonNull(BlockBattles.getInstance().getCounters().getList("normal_items." + materialName))) {
+                String itemName = (String) object;
+                lore.add(Color.translate("&e" + WordUtils.capitalizeFully(itemName.replace("_", " "))));
+            }
+            meta.setLore(lore);
+            item.setItemMeta(meta);
+
+            inventory.setItem(Inventories.slots[i], item);
 
             i++;
         }
 
-        ItemStack previousPage = Data.createItem(Material.PLAYER_HEAD, "&eClick to go to the previous page", null);
-        Data.setSkullTexture(previousPage, "http://textures.minecraft.net/texture/bd69e06e5dadfd84e5f3d1c21063f2553b2fa945ee1d4d7152fdc5425bc12a9");
+        ItemStack previousPage = Inventories.createItem(Material.PLAYER_HEAD, "&eClick to go to the previous page", null);
+        Inventories.setSkullTexture(previousPage, "http://textures.minecraft.net/texture/bd69e06e5dadfd84e5f3d1c21063f2553b2fa945ee1d4d7152fdc5425bc12a9");
 
-        ItemStack nextPage = Data.createItem(Material.PLAYER_HEAD, "&eClick to go to the next page", null);
-        Data.setSkullTexture(nextPage, "https://textures.minecraft.net/texture/19bf3292e126a105b54eba713aa1b152d541a1d8938829c56364d178ed22bf");
+        ItemStack nextPage = Inventories.createItem(Material.PLAYER_HEAD, "&eClick to go to the next page", null);
+        Inventories.setSkullTexture(nextPage, "https://textures.minecraft.net/texture/19bf3292e126a105b54eba713aa1b152d541a1d8938829c56364d178ed22bf");
 
-        ItemStack currentPage = Data.createItem(Material.BLACK_STAINED_GLASS_PANE, "&eCurrent page: &f" + page, null);
+        ItemStack currentPage = Inventories.createItem(Material.BLACK_STAINED_GLASS_PANE, "&eCurrent page: &f" + page, null);
 
         inventory.setItem(48, previousPage);
         inventory.setItem(49, currentPage);

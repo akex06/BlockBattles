@@ -5,12 +5,17 @@ import dev.akex.blockbattles.listeners.*;
 import dev.akex.blockbattles.utils.Battle;
 import dev.akex.blockbattles.utils.Color;
 import dev.akex.blockbattles.utils.Config;
-import org.bukkit.Material;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
+import java.util.Map;
 
 public final class BlockBattles extends JavaPlugin {
     public static BlockBattles instance;
@@ -18,10 +23,9 @@ public final class BlockBattles extends JavaPlugin {
         return instance;
     }
     private FileConfiguration counters;
+    private FileConfiguration kits;
     public HashMap<Player, Battle> battles = new HashMap<>();
-
     public HashMap<Player, String> playersWaiting = new HashMap<>();
-    public HashMap<String, Integer> battlePlayerAmount = new HashMap<>();
     public HashMap<Player, Integer> playerLuck = new HashMap<>();
 
     @Override
@@ -31,24 +35,28 @@ public final class BlockBattles extends JavaPlugin {
         getConfig().options().copyDefaults();
         saveDefaultConfig();
 
-        for (String battleName : getConfig().getConfigurationSection("battles").getKeys(false)) {
-            battlePlayerAmount.put(battleName, 0);
-        }
-
         loadEvents();
         loadCommands();
 
         counters = Config.getConfig("counters.yml");
-
-        System.out.println(Color.getPrefix("Plugin enabled"));
+        kits = Config.getConfig("kits.yml");
+        System.out.println(Color.getPrefix("Plugin asd"));
     }
     @Override
     public void onDisable() {
         saveDefaultConfig();
+
+        for (Map.Entry<Player, Battle> entry : battles.entrySet()) {
+            entry.getValue().removePlayers(null);
+        }
     }
 
     public FileConfiguration getCounters() {
         return this.counters;
+    }
+
+    public FileConfiguration getKits() {
+        return this.kits;
     }
 
     public void loadEvents() {
@@ -58,6 +66,7 @@ public final class BlockBattles extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new OnBlockPlace(), this);
         getServer().getPluginManager().registerEvents(new OnBlockBreak(), this);
         getServer().getPluginManager().registerEvents(new OnHangingPlace(), this);
+        getServer().getPluginManager().registerEvents(new OnPlayerMove(), this);
     }
 
     public void loadCommands() {
@@ -67,5 +76,6 @@ public final class BlockBattles extends JavaPlugin {
         this.getCommand("leave").setExecutor(new Leave());
         this.getCommand("setbattlespawn").setExecutor(new SetBattleSpawn());
         this.getCommand("counters").setExecutor(new Counters());
+        this.getCommand("kits").setExecutor(new Kits());
     }
 }

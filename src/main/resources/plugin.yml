@@ -13,3 +13,4 @@ commands:
   setbattlespawn:
     permission: blockbattles.setbattlespawn
   counters:
+  kits:

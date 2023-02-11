@@ -18,7 +18,7 @@ public class OnDisconnect implements Listener {
         Player player = event.getPlayer();
         Battle battle = BlockBattles.getInstance().battles.get(player);
         if (battle != null) {
-            Battle.removePlayers(player);
+            battle.removePlayers(player);
         } else {
             BlockBattles.getInstance().playersWaiting.remove(player);
         }

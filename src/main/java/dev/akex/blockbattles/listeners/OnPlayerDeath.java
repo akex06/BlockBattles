@@ -16,7 +16,7 @@ public class OnPlayerDeath implements Listener {
         Battle battle = BlockBattles.getInstance().battles.get(player);
         HashMap<Player, String> playersWaiting = BlockBattles.getInstance().playersWaiting;
         if (battle != null) {
-            Battle.removePlayers(player);
+            battle.removePlayers(player);
         } else if (playersWaiting.get(player) != null) {
             playersWaiting.remove(player);
         }

@@ -1,14 +1,37 @@
-prefix: "&7[ &fBlock&6Battles &7]&f: "
+prefix: '&7[ &fBlock&6Battles &7]&f: '
 
-inventory_title: "&7Battle List"
+inventory_title: '&7Battle List'
+spawn:
+  x: 24.993240430140784
+  y: -60.0
+  z: -3.553203469200858
+  yaw: -89.25925
+  pitch: 3.1498504
+  world: battles
+
 battles:
-  0:
+  '0':
     p1_spawn:
-      x: 35.5
+      x: 36.5
       y: -60
-      z: 9.5
+      z: -9.5
+      yaw: -135
+      pitch: 0
+      world: battles
     p2_spawn:
-      x: 41.5
-      y: -60
-      z: -14.5
-    players: 0
+      x: 41.667430215942126
+      y: -60.0
+      z: -14.72288087044364
+      yaw: 44.85193
+      pitch: -0.75000715
+      world: battles
+    box:
+      pos_1:
+        x: 42
+        y: -60
+        z: -9
+      pos_2:
+        x: 35
+        y: -46
+        z: -16
+      world: battles

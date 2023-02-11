@@ -29,7 +29,7 @@ public class SetSpawn implements CommandExecutor {
         config.set("spawn.yaw", location.getYaw());
         config.set("spawn.pitch", location.getPitch());
         config.set("spawn.world", location.getWorld().getName());
-        Data.getInstance().saveConfig();
+        BlockBattles.getInstance().saveConfig();
 
         player.sendMessage(Color.getPrefix("&aThe spawn has changed to your current location"));
 

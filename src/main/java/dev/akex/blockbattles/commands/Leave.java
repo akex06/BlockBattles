@@ -1,9 +1,12 @@
 package dev.akex.blockbattles.commands;
 
+import dev.akex.blockbattles.BlockBattles;
 import dev.akex.blockbattles.utils.Battle;
 import dev.akex.blockbattles.utils.Color;
+import dev.akex.blockbattles.utils.Config;
 import dev.akex.blockbattles.utils.Data;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -20,10 +23,10 @@ public class Leave implements CommandExecutor {
         }
 
         Player player = ((Player) sender).getPlayer();
-        HashMap<Player, Battle> battles = Data.getInstance().battles;
-        HashMap<Player, String> playersWaiting = Data.getInstance().playersWaiting;
+        HashMap<Player, Battle> battles = BlockBattles.getInstance().battles;
+        HashMap<Player, String> playersWaiting = BlockBattles.getInstance().playersWaiting;
         Battle battle = battles.get(player);
-        Location spawnLocation = Data.getLocation("spawn.");
+        Location spawnLocation = Config.getLocation("spawn.");
 
         if (battle == null) {
             if (playersWaiting.get(player) != null) {
@@ -33,7 +36,8 @@ public class Leave implements CommandExecutor {
                 player.sendMessage(Color.getPrefix("&cYou can only use this command in a match"));
             }
         } else {
-            Battle.removePlayers(player);
+            Player winner = player == battle.player1 ? battle.player2 : battle.player1;
+            battle.removePlayers(winner);
         }
 
         return true;

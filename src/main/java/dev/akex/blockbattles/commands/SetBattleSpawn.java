@@ -1,5 +1,6 @@
 package dev.akex.blockbattles.commands;
 
+import dev.akex.blockbattles.BlockBattles;
 import dev.akex.blockbattles.utils.Color;
 import dev.akex.blockbattles.utils.Data;
 import org.bukkit.Location;
@@ -28,7 +29,7 @@ public class SetBattleSpawn implements CommandExecutor {
         String spawn = args[1] == "1" ? "p1_spawn" : "p2_spawn";
 
         Location location = player.getLocation();
-        FileConfiguration config = Data.getConfig();
+        FileConfiguration config = BlockBattles.getInstance().getConfig();
 
         config.set("battles." + battleName + "." + spawn + ".x", location.getX());
         config.set("battles." + battleName + "." + spawn + ".y", location.getY());
@@ -37,7 +38,7 @@ public class SetBattleSpawn implements CommandExecutor {
         config.set("battles." + battleName + "." + spawn + ".pitch", location.getPitch());
         config.set("battles." + battleName + "." + spawn + ".world", location.getWorld().getName());
 
-        Data.getInstance().saveConfig();
+        BlockBattles.getInstance().saveConfig();
         return true;
     }
 }

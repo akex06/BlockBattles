@@ -111,3 +111,15 @@ normal_items:
 
   PINK_CARPET:
     - FLOWER_POT
+
+  OAK_FENCE:
+    - REDSTONE_LAMP
+
+  REDSTONE_LAMP:
+    - LEVER
+
+  STICKY_PISTON:
+    - OBSIDIAN
+
+  OBSIDIAN:
+    - BLACK_BED

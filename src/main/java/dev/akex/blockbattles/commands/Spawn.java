@@ -2,6 +2,7 @@ package dev.akex.blockbattles.commands;
 
 import dev.akex.blockbattles.BlockBattles;
 import dev.akex.blockbattles.utils.Color;
+import dev.akex.blockbattles.utils.Config;
 import dev.akex.blockbattles.utils.Data;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -20,7 +21,7 @@ public class Spawn implements CommandExecutor {
         }
 
         Player player = ((Player) sender).getPlayer();
-        Location location = Data.getLocation("spawn.");
+        Location location = Config.getLocation("spawn.");
 
         player.teleport(location);
 
