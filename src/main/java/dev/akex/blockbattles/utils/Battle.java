@@ -1,6 +1,7 @@
 package dev.akex.blockbattles.utils;
 
 import dev.akex.blockbattles.BlockBattles;
+import dev.akex.blockbattles.commands.Kits;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
@@ -63,6 +64,9 @@ public class Battle {
         battles.put(player1, this);
         battles.put(player2, this);
 
+        Kits.giveKit(player1);
+        Kits.giveKit(player2);
+
         this.player1Location = Config.getLocation("battles." + battleID + ".p1_spawn");
         this.player2Location = Config.getLocation("battles." + battleID + ".p2_spawn");
 
@@ -103,9 +107,11 @@ public class Battle {
         FileConfiguration config = BlockBattles.getInstance().getConfig();
 
         BoundingBox box = getBattleBox(battleID);
+
+
+        World world = Bukkit.getWorld(Objects.requireNonNull(config.getString("battles." + battleID + ".box.world")));
         Vector max = box.getMax();
         Vector min = box.getMin();
-        World world = Bukkit.getWorld(Objects.requireNonNull(config.getString("battles." + battleID + ".box.world")));
         assert world != null;
         for (int x = min.getBlockX(); x <= max.getBlockX(); x++) {
             for (int y = min.getBlockY(); y <= max.getBlockY(); y++) {
@@ -114,32 +120,25 @@ public class Battle {
                 }
             }
         }
-
-        for (Entity entity : world.getNearbyEntities(box)) {
-            entity.remove();
-        }
-
-        System.out.println(battles);
-        System.out.println(BlockBattles.getInstance().playersWaiting);
+        Bukkit.getScheduler().runTaskLater(BlockBattles.getInstance(), () -> {
+            for (Entity entity : world.getNearbyEntities(box)) {
+                if (!(entity instanceof  Player)) {
+                    entity.remove();
+                }
+            }
+        }, 1L);
     }
 
-    public static void changeTurns(Player player) {
-        Battle battle = BlockBattles.getInstance().battles.get(player);
-
-        if (battle == null) {
-            return;
-        }
-        Player player2 = player == battle.player1 ?  battle.player2 : battle.player1;
-
-        if (battle.extraTurns >= 1) {
-            battle.extraTurns -= 1;
-            player.sendMessage(Color.getPrefix("&aYou have an extra turn"));
-            player2.sendMessage(Color.getPrefix("&f" + player.getName() + " &chas an extra turn"));
+    public void changeTurns() {
+        if (this.extraTurns >= 1) {
+            this.extraTurns -= 1;
+            this.turn.sendMessage(Color.getPrefix("&aYou have an extra turn"));
+            this.player2.sendMessage(Color.getPrefix("&f" + this.turn.getName() + " &chas an extra turn"));
 
         } else {
-            player.sendMessage(Color.getPrefix("&cIt's &f" + player2.getName() + " &cturn"));
-            player2.sendMessage(Color.getPrefix("&aIt's your turn"));
-            battle.turn = battle.turn == player ? player2 : player;
+            this.turn.sendMessage(Color.getPrefix("&cIt's &f" + player2.getName() + " &cturn"));
+            this.player2.sendMessage(Color.getPrefix("&aIt's your turn"));
+            this.turn = this.turn == this.player1 ? this.player2 : this.turn;
         }
     }
 

@@ -23,7 +23,9 @@ public class Inventories {
     public static ItemStack createItem(Material material, String name, ArrayList<String> lore) {
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(Color.translate(name));
+        if (name != null) {
+            meta.setDisplayName(Color.translate(name));
+        }
 
         if (lore != null) {
             meta.setLore(lore);

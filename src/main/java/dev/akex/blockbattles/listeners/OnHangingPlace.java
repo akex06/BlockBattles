@@ -129,6 +129,6 @@ public class OnHangingPlace implements Listener {
             Data.sendMessages("&fYou got nothing", "&f" + player.getName() + " &fgot nothing", player);
         }
 
-        Battle.changeTurns(player);
+        battle.changeTurns();
     }
 }

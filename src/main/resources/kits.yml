@@ -45,7 +45,7 @@ kits:
       - PURPLE_CONCRETE
 
   "5":
-    item: LIME_BED
+    item: PURPLE_WOOL
     price: 0
     content:
       - LIME_BED
@@ -56,7 +56,7 @@ kits:
       - PURPLE_WOOL
 
   "6":
-    item: BLACK_BED
+    item: ENCHANTING_TABLE
     price: 0
     content:
       - BLACK_BED

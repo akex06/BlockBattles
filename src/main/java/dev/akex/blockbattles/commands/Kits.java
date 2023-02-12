@@ -5,15 +5,21 @@ import dev.akex.blockbattles.utils.Color;
 import dev.akex.blockbattles.utils.Inventories;
 import org.apache.commons.lang3.text.WordUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
+import javax.xml.transform.Result;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class Kits implements CommandExecutor {
@@ -32,6 +38,7 @@ public class Kits implements CommandExecutor {
             return true;
         }
 
+
         Inventory inventory = Bukkit.createInventory(null, 54, Color.translate("&fKit list"));
 
         ItemStack backgroundItem = Inventories.createItem(Material.BLACK_STAINED_GLASS_PANE, " ", null);
@@ -40,6 +47,7 @@ public class Kits implements CommandExecutor {
         }
 
         int i = 0;
+        String playerKit = getKit(player);
         FileConfiguration kits = instance.getKits();
         for (Object kitObject : kits.getConfigurationSection("kits.").getKeys(false)) {
             String kitName = (String) kitObject;
@@ -58,6 +66,13 @@ public class Kits implements CommandExecutor {
                     lore
             );
 
+            if (kitName.equals(playerKit)) {
+                ItemMeta itemMeta = item.getItemMeta();
+                itemMeta.addEnchant(Enchantment.DURABILITY, 1, false);
+                itemMeta.setDisplayName(Color.translate("&f" + kitName + " - &bSelected"));
+                item.setItemMeta(itemMeta);
+            }
+
             inventory.setItem(Inventories.slots[i], item);
 
             i++;
@@ -67,8 +82,56 @@ public class Kits implements CommandExecutor {
 
         return true;
     }
+    public static String getDefaultKit() {
+        return BlockBattles.getInstance().getKits().getString("default_kit");
+    }
 
-    public static void getKit(Player player) {
+    public static String getKit(Player player) {
+        String defaultKit = getDefaultKit();
+        String kitName = defaultKit;
+        try {
+            PreparedStatement statement = BlockBattles.getInstance().getConnection().prepareStatement("SELECT kit FROM kits WHERE player = ?");
+            statement.setString(1, String.valueOf(player.getUniqueId()));
+            ResultSet set = statement.executeQuery();
+            if (!set.isBeforeFirst()) {
+                statement = BlockBattles.getInstance().getConnection().prepareStatement("INSERT INTO kits VALUES (?, ?)");
+                statement.setString(1, String.valueOf(player.getUniqueId()));
+                statement.setString(2, kitName);
+                statement.execute();
+            } else {
+                while (set.next()){
+                    kitName = set.getString("kit");
+                }
+            }
 
+            statement.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return kitName;
+    }
+
+    public static void updateKit(Player player, String selectedKit) {
+        try (final PreparedStatement statement = BlockBattles.getInstance().getConnection().prepareStatement("UPDATE kits SET kit = ? WHERE player = ?")) {
+            statement.setMaxRows(1);
+            statement.setString(1, selectedKit);
+            statement.setString(2, String.valueOf(player.getUniqueId()));
+            statement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void giveKit(Player player) {
+        FileConfiguration kits = BlockBattles.getInstance().getKits();
+        String kit = getKit(player);
+        int i = 0;
+        for (Object object : kits.getList("kits." + kit + ".content")) {
+            player.getInventory().setItem(i, Inventories.createItem(Material.getMaterial(String.valueOf(object)), null, null));
+
+            i++;
+        }
     }
 }

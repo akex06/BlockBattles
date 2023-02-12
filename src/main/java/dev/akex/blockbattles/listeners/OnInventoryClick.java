@@ -1,13 +1,16 @@
 package dev.akex.blockbattles.listeners;
 
 import dev.akex.blockbattles.BlockBattles;
+import dev.akex.blockbattles.commands.Kits;
 import dev.akex.blockbattles.utils.Battle;
 import dev.akex.blockbattles.utils.Color;
 import dev.akex.blockbattles.utils.Config;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,6 +20,8 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +57,8 @@ public class OnInventoryClick implements Listener {
 
                 String pathLocation = playerAmount == 1 ? "battles." + battleName + "." + "p1_spawn." : "battles." + battleName + "." + "p2_spawn.";
                 Location location = Config.getLocation(pathLocation);
+                player.getInventory().clear();
+                player.setGameMode(GameMode.SURVIVAL);
 
                 player.teleport(location);
 
@@ -86,6 +93,14 @@ public class OnInventoryClick implements Listener {
             }
         } else if (view.getTitle().equals(Color.translate("&fKit list"))) {
             event.setCancelled(true);
+            Player player = ((Player) event.getWhoClicked()).getPlayer();
+            ItemStack item = event.getCurrentItem();
+            String kitName = Kits.getKit(player);
+            String selectedKit = ChatColor.stripColor(item.getItemMeta().getDisplayName().split(" ")[0]);
+            if (!selectedKit.equals(kitName)) {
+                Kits.updateKit(player, selectedKit);
+                player.performCommand("kits");
+            }
         }
     }
 }

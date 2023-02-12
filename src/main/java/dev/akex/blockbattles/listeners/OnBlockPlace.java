@@ -70,6 +70,8 @@ public class OnBlockPlace implements Listener {
             if (blockType == Material.OAK_SAPLING) {
                 block.getLocation().getBlock().setType(Material.AIR);
                 block.getWorld().generateTree(block.getLocation(), TreeType.TREE);
+            } else if(blockType == Material.LIGHTNING_ROD){
+                block.getWorld().strikeLightning(block.getLocation());
             }
 
             if (counterList != null) {
@@ -91,7 +93,6 @@ public class OnBlockPlace implements Listener {
                 }
             }
         }
-
-        Battle.changeTurns(player);
+        battle.changeTurns();
     }
 }

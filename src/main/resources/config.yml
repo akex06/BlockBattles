@@ -1,6 +1,6 @@
 prefix: '&7[ &fBlock&6Battles &7]&f: '
-
 inventory_title: '&7Battle List'
+jbdc: "yourjbdcstring"
 spawn:
   x: 24.993240430140784
   y: -60.0
